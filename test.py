@@ -1,10 +1,13 @@
 from PIL import Image
+import math
 
 img = Image.open("dolphin-05.jpg")
+img = Image.open("beach.jpeg")
 
 def pixel_diff(p1, p2):
     # Sum of sq differences
-    return pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2) + pow(p1[2] - p2[2], 2)
+    # return pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2) + pow(p1[2] - p2[2], 2)
+    return (pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2) + pow(p1[2] - p2[2], 2))**2
 
 def normalize_grid(grid):
     # http://stats.stackexchange.com/questions/70801/how-to-normalize-data-to-0-1-range
@@ -17,7 +20,9 @@ def normalize_grid(grid):
     for y in range(height):
         for x in range(width):
             # TODO REMOVE SCALE
-            normalized[y][x] = 255*(float(grid[y][x] - min_val) / (max_val - min_val))
+            # normalized[y][x] = 255*(float(grid[y][x] - min_val) / (max_val - min_val))
+            # Log activation function
+            normalized[y][x] = 255*math.log(1+9*(float(grid[y][x] - min_val) / (max_val - min_val)), 10)
     return normalized
 
 def greyscale(grid):
@@ -62,6 +67,19 @@ def partial_derivative_y(image):
             dx = pixel_diff(current, compare)
             dx_grid[y][x] = dx
     return dx_grid
+
+def better_seam_tester(image, cost_grid, direction_grid):
+    width, height = image.size
+    min_cost = cost_grid[height-1][0]
+    min_cost_inx = 0
+    for x in range(1, width, 1):
+        y = height-1
+        if cost_grid[y][x] < min_cost:
+            min_cost_inx = x
+            min_cost = cost_grid[height-1][x]
+
+    y = height-1
+    draw_seam(image, (min_cost_inx, y), direction_grid)
 
 def seam_tester(image, direction_grid):
     width, height = image.size
