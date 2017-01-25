@@ -1,13 +1,12 @@
 from PIL import Image
 import math
 
-img = Image.open("dolphin-05.jpg")
 img = Image.open("beach.jpeg")
+img = Image.open("dolphin-05.jpg")
 
 def pixel_diff(p1, p2):
     # Sum of sq differences
-    # return pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2) + pow(p1[2] - p2[2], 2)
-    return (pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2) + pow(p1[2] - p2[2], 2))**2
+    return pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2) + pow(p1[2] - p2[2], 2)
 
 def normalize_grid(grid):
     # http://stats.stackexchange.com/questions/70801/how-to-normalize-data-to-0-1-range
