@@ -1,8 +1,8 @@
 from PIL import Image
 import math
 
-img = Image.open("beach.jpeg")
 img = Image.open("dolphin-05.jpg")
+img = Image.open("beach.jpeg")
 
 def pixel_diff(p1, p2):
     # Sum of sq differences
@@ -33,6 +33,16 @@ def greyscale(grid):
             val = int(grid[y][x])
             image.putpixel((x,y), (val,val,val))
     return image
+
+def partial_sum(image):
+    xmat = partial_derivative_x(image)
+    ymat = partial_derivative_y(image)
+
+    for i in range(len(xmat)):
+       # iterate through columns
+       for j in range(len(xmat[0])):
+           xmat[i][j] = xmat[i][j] + ymat[i][j]
+    return xmat
 
 def partial_derivative_x(image):
     width, height = image.size
