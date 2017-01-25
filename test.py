@@ -62,3 +62,72 @@ def partial_derivative_y(image):
             dx = pixel_diff(current, compare)
             dx_grid[y][x] = dx
     return dx_grid
+
+def seam_tester(image, direction_grid):
+    width, height = image.size
+    for x in range(1, width, 3):
+        y = height-1
+        draw_seam(image, (x, y), direction_grid)
+
+def draw_seam(image, start_point, direction_grid):
+    cur_point = start_point
+    while direction_grid[cur_point[1]][cur_point[0]] != 0:
+        image.putpixel(cur_point, (255,0,0))
+
+        if direction_grid[cur_point[1]][cur_point[0]] == 1:
+            cur_point = (cur_point[0]-1, cur_point[1]-1)
+        elif direction_grid[cur_point[1]][cur_point[0]] == 2:
+            cur_point = (cur_point[0], cur_point[1]-1)
+        else: # 3
+            cur_point = (cur_point[0]+1, cur_point[1]-1)
+    return image
+
+def seam_search_vertical(partial_grid):
+
+    width = len(partial_grid[0])
+    height = len(partial_grid)
+    cost_grid = [[None for _ in range(width)] for _ in range(height)]
+    direction_grid = [[0 for _ in range(width)] for _ in range(height)]
+
+    # Populate first row
+    for x in range(width):
+        y = 0
+        cost_grid[y][x] = partial_grid[y][x]
+        direction_grid[y][x] = 0 # END OF PATH
+
+    for y in range(1, height):
+        for x in range(width):
+            if x == 0:
+                min_parent = 2
+                min_cost = cost_grid[y-1][x]
+                if cost_grid[y-1][x+1] < min_cost:
+                    min_parent = 3
+                    min_cost = cost_grid[y-1][x+1]
+            elif x == width - 1:
+                min_parent = 1
+                min_cost = cost_grid[y-1][x-1]
+                if cost_grid[y-1][x] < min_cost:
+                    min_parent = 2
+                    min_cost = cost_grid[y-1][x]
+            else:
+                min_parent = 1
+                min_cost = cost_grid[y-1][x-1]
+                if cost_grid[y-1][x] < min_cost:
+                    min_parent = 2
+                    min_cost = cost_grid[y-1][x]
+                if cost_grid[y-1][x+1] < min_cost:
+                    min_parent = 3
+                    min_cost = cost_grid[y-1][x+1]
+
+            cost_grid[y][x] = partial_grid[y][x] + min_cost
+            direction_grid[y][x] = min_parent
+
+    return cost_grid, direction_grid
+    # for x in range(width):
+        # y = height - 1
+        # if cost_grid[y][x] < cur_min
+            # min_index = x
+
+
+
+
