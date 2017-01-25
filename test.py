@@ -1,8 +1,8 @@
 from PIL import Image
 import math
 
-img = Image.open("dolphin-05.jpg")
 img = Image.open("beach.jpeg")
+img = Image.open("dolphin-05.jpg")
 
 def pixel_diff(p1, p2):
     # Sum of sq differences
